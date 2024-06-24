@@ -1,40 +1,26 @@
-import { useCallback, useContext, useState } from "react";
-import Context from "../context/user";
-import userService from "../services/user";
+import { useState, useContext, createContext } from "react";
+import { register, login } from "../services/user";
 
-export default function useUser() {
-  const { jwt, setJWT } = useContext(Context);
-  const [state, setState] = useState({ loading: false, error: false, codeError: null });
+const UserContext = createContext();
 
-  const register = useCallback(
-    ({ name, email, password }) => {
-      setState({ loading: true, error: false });
-      userService({ name, email, password })
-        .then((jwt) => {
-          window.sessionStorage.setItem("jwt", jwt);
-          setState({ loading: false, error: false, codeError: 200 });
-          setJWT(jwt);
-        })
-        .catch((err) => {
-          window.sessionStorage.removeItem("jwt");
-          setState({ loading: false, error: true, codeError: 400 });
-          console.error(err);
-        });
-    },
-    [setJWT]
-  );
+export const useUser = () => useContext(UserContext);
 
-  const logout = useCallback(() => {
-    window.sessionStorage.removeItem("jwt");
-    setJWT(null);
-  }, [setJWT]);
+export const UserProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
 
-  return {
-    isLogged: Boolean(jwt),
-    isLoginLoading: state.loading,
-    hasLoginError: state.error,
-    codeError: state.codeError,
-    register,
-    logout,
+  const handleRegister = async (userData) => {
+    const token = await register(userData);
+    setUser({ ...userData, token });
   };
-}
+
+  const handleLogin = async (userData) => {
+    const token = await login(userData);
+    setUser({ email: userData.email, token });
+  };
+
+  return (
+    <UserContext.Provider value={{ user, handleRegister, handleLogin }}>
+      {children}
+    </UserContext.Provider>
+  );
+};

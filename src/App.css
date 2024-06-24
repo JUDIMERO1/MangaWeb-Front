@@ -1029,3 +1029,17 @@ select {
   width: 100%;
   margin-bottom: 20px;
 }
+
+.logout-button {
+  background: none;
+  border: none;
+  color: var(--header);
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+  background-color: var(--primary);
+}

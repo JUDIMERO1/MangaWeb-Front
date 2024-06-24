@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import { UserContextProvider } from "./context/user";
+import { UserProvider } from "./context/user";
 import routers from "./helper/Routers";
 import Groups from "./pages/Groups";
 import Home from "./pages/Home";
@@ -13,7 +13,7 @@ import Serie from "./pages/Serie";
 
 function App() {
   return (
-    <UserContextProvider>
+    <UserProvider>
       <BrowserRouter>
         <Routes>
           <Route path={routers.home} element={<Home />} />
@@ -26,7 +26,7 @@ function App() {
           <Route path={routers.read} element={<Read />} />
         </Routes>
       </BrowserRouter>
-    </UserContextProvider>
+    </UserProvider>
   );
 }
 
